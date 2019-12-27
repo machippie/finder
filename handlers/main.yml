@@ -1,0 +1,9 @@
+---
+- name: Kill finder
+  command: killall Finder
+  register: finder_kill
+  failed_when: finder_kill.rc != 0 and "No matching processes belonging to you were found" not in finder_kill.stderr
+  become: '{{ (finder_user != ansible_user_id) | bool }}'
+  become_user: '{{ finder_user }}'
+
+...

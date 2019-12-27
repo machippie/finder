@@ -1,0 +1,427 @@
+---
+- name: finder user
+  set_fact:
+    finder_user: '{{ finder_user | default(homebrew_user) | default(ansible_user_id) }}'
+  tags:
+    - finder
+
+- become: '{{ (finder_user != ansible_user_id) | bool }}'
+  become_user: '{{ finder_user }}'
+  block:
+    - name: install mysides
+      homebrew_cask:
+        name: mysides
+        greedy: True
+        install_options: appdir=/Applications
+        accept_external_apps: False
+        state: upgraded
+      tags:
+        - finder
+
+    - name: show library
+      command: 'chflags {{ "nohidden" if finder_show_library else "hidden" }} ~/Library'
+      changed_when: False
+      tags:
+        - finder
+
+    - name: icon size
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: NSGlobalDomain
+        key: NSTableViewDefaultSizeMode
+        type: int
+        value: '{{ finder_default_icon_size }}'
+        state: present
+      tags:
+        - finder
+
+    - name: expand savepanel
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: NSGlobalDomain
+        key: NSNavPanelExpandedStateForSaveMode
+        type: bool
+        value: '{{ finder_expand_save_panel }}'
+        state: present
+      tags:
+        - finder
+
+    - name: expand printpanel
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: NSGlobalDomain
+        key: PMPrintingExpandedStateForPrint
+        type: bool
+        value: '{{ finder_expand_print_panel }}'
+        state: present
+      tags:
+        - finder
+
+    - name: springing enabled
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: NSGlobalDomain
+        key: com.apple.springing.enabled
+        type: bool
+        value: '{{ finder_springing_enabled }}'
+        state: present
+      tags:
+        - finder
+
+    - name: springing delay
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: NSGlobalDomain
+        key: com.apple.springing.delay
+        type: float
+        value: '{{ finder_springing_delay }}'
+        state: present
+      tags:
+        - finder
+
+    - name: path bar
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: ShowPathbar
+        type: bool
+        value: '{{ finder_show_path_bar }}'
+        state: present
+      tags:
+        - finder
+
+    - name: status bar
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: ShowStatusBar
+        type: bool
+        value: '{{ finder_show_status_bar }}'
+        state: present
+      tags:
+        - finder
+
+    - name: path title
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: _FXShowPosixPathInTitle
+        type: bool
+        value: '{{ finder_path_in_title }}'
+        state: present
+      tags:
+        - finder
+
+    - name: path start
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: PathBarRootAtHome
+        type: bool
+        value: '{{ finder_path_bar_at_home }}'
+        state: present
+      tags:
+        - finder
+
+    - name: restore windows
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: RestoreWindowState
+        type: bool
+        value: '{{ finder_restore_window_state }}'
+        state: present
+      tags:
+        - finder
+
+    - name: external drives
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: ShowExternalHardDrivesOnDesktop
+        type: bool
+        value: '{{ finder_show_external_drives_on_desktop }}'
+        state: present
+      tags:
+        - finder
+
+    - name: hard drives
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: ShowHardDrivesOnDesktop
+        type: bool
+        value: '{{ finder_show_hard_drives_on_desktop }}'
+        state: present
+      tags:
+        - finder
+
+    - name: mounted servers
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: ShowMountedServersOnDesktop
+        type: bool
+        value: '{{ finder_show_mounted_servers_on_desktop }}'
+        state: present
+      tags:
+        - finder
+
+    - name: removable media
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: ShowRemovableMediaOnDesktop
+        type: bool
+        value: '{{ finder_show_removable_media_on_desktop }}'
+        state: present
+      tags:
+        - finder
+
+    - name: window target
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: NewWindowTarget
+        type: string
+        value: '{{ finder_new_window_target }}'
+        state: present
+      tags:
+        - finder
+
+    - name: preferred view
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: FXPreferredViewStyle
+        type: string
+        value: '{{ finder_preferred_view_style }}'
+        state: present
+      tags:
+        - finder
+
+    - name: search scope
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: FXDefaultSearchScope
+        type: string
+        value: '{{ finder_default_search_scope }}'
+        state: present
+      tags:
+        - finder
+
+    - name: preferred group
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: FXPreferredGroupBy
+        type: string
+        value: '{{ finder_preferred_group_by }}'
+        state: present
+      tags:
+        - finder
+
+    - name: folders first
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: _FXSortFoldersFirst
+        type: bool
+        value: '{{ finder_folders_first }}'
+        state: present
+      tags:
+        - finder
+
+    - name: text selection
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: QLEnableTextSelection
+        type: bool
+        value: '{{ finder_enable_text_selection }}'
+        state: present
+      tags:
+        - finder
+
+    - name: hidden files
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: AppleShowAllFiles
+        type: bool
+        value: '{{ finder_show_hidden_files }}'
+        state: present
+      tags:
+        - finder
+
+    - name: show extensions
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: AppleShowAllExtensions
+        type: bool
+        value: '{{ finder_show_all_extensions }}'
+        state: present
+      tags:
+        - finder
+
+    - name: extension warning
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: FXEnableExtensionChangeWarning
+        type: bool
+        value: '{{ finder_enable_extension_change_warning }}'
+        state: present
+      tags:
+        - finder
+
+    - name: warn trash
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: WarnOnEmptyTrash
+        type: bool
+        value: '{{ finder_warn_on_empty_trash }}'
+        state: present
+      tags:
+        - finder
+
+    - name: securely trash
+      notify:
+        - kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: EmptyTrashSecurely
+        type: bool
+        value: '{{ finder_emptry_trash_securely }}'
+        state: present
+      tags:
+        - finder
+
+
+
+
+
+
+
+# Writing of .DS_Store files on network or USB volumes
+# defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+# defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+
+
+
+
+
+# # Expand the following File Info panes:
+# # “General”, “Open with”, and “Sharing & Permissions”
+# defaults write com.apple.finder FXInfoPanesExpanded -dict \
+#     General -bool true \
+#     OpenWith -bool true \
+#     Privileges -bool true
+
+
+
+
+
+# View Options
+# ColumnShowIcons    : Show preview column
+# ShowPreview        : Show icons
+# ShowIconThumbnails : Show icon preview
+# ArrangeBy          : Sort by
+#   dnam : Name
+#   kipl : Kind
+#   ludt : Date Last Opened
+#   pAdd : Date Added
+#   modd : Date Modified
+#   ascd : Date Created
+#   logs : Size
+#   labl : Tags
+# /usr/libexec/PlistBuddy \
+#     -c "Set :StandardViewOptions:ColumnViewOptions:ColumnShowIcons bool    false" \
+#     -c "Set :StandardViewOptions:ColumnViewOptions:FontSize        integer 11"    \
+#     -c "Set :StandardViewOptions:ColumnViewOptions:ShowPreview     bool    true"  \
+#     -c "Set :StandardViewOptions:ColumnViewOptions:ArrangeBy       string  dnam"  \
+#     ~/Library/Preferences/com.apple.finder.plist
+
+#     # Show item info near icons on the desktop and in other icon views
+#     - /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:showItemInfo true" ~/Library/Preferences/com.apple.finder.plist
+#     - /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:showItemInfo true" ~/Library/Preferences/com.apple.finder.plist
+#     - /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:showItemInfo true" ~/Library/Preferences/com.apple.finder.plist
+
+#     # Enable snap-to-grid for icons on the desktop and in other icon views
+#     - /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
+#     - /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
+#     - /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
+
+#     # Increase grid spacing for icons on the desktop and in other icon views
+#     - /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:gridSpacing 100" ~/Library/Preferences/com.apple.finder.plist
+#     - /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:gridSpacing 100" ~/Library/Preferences/com.apple.finder.plist
+#     - /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:gridSpacing 100" ~/Library/Preferences/com.apple.finder.plist
+
+#     # Increase the size of icons on the desktop and in other icon views
+#     - /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
+#     - /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
+#     - /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
+
+
+# # Set icon view settings on desktop and in icon views
+# for view in 'Desktop' 'FK_Standard' 'Standard'; do
+
+#     # Item info near icons
+#     /usr/libexec/PlistBuddy -c "Set :${view}ViewSettings:IconViewSettings:showItemInfo bool true" ~/Library/Preferences/com.apple.finder.plist
+
+#     # Item info to right of icons
+#     /usr/libexec/PlistBuddy -c "Set :${view}ViewSettings:IconViewSettings:labelOnBottom bool false" ~/Library/Preferences/com.apple.finder.plist
+
+#     # Snap-to-grid for icons
+#     /usr/libexec/PlistBuddy -c "Set :${view}ViewSettings:IconViewSettings:arrangeBy string grid" ~/Library/Preferences/com.apple.finder.plist
+
+#     # Grid spacing for icons
+#     /usr/libexec/PlistBuddy -c "Set :${view}ViewSettings:IconViewSettings:gridSpacing integer 100" ~/Library/Preferences/com.apple.finder.plist
+
+#     # Icon size
+#     /usr/libexec/PlistBuddy -c "Set :${view}ViewSettings:IconViewSettings:iconSize integer 32" ~/Library/Preferences/com.apple.finder.plist
+
+# done
+
+
+
+
+    - name: clear favorites
+      shell: mysides remove all
+      tags:
+        - finder
+
+    - name: favorite apps
+      loop: '{{ finder_favorites }}'
+      shell: mysides add {{ item.name }} {{ item.path }}
+      tags:
+        - finder
+
+...
