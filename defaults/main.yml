@@ -1,41 +1,150 @@
+# Standards: 0.1
 ---
+# @var finder_user:description: User to run user-specific commands
+# @var finder_user:value: finder_user | default(homebrew_user) | default(ansible_user_id)
 # finder_user:
 
-finder_show_library: True
+# @var finder_default_icon_size:description: Default icon size
 finder_default_icon_size: 2
+
+# @var finder_expand_save_panel:description: Expanded save panel
 finder_expand_save_panel: True
+
+# @var finder_expand_print_panel:description: Expanded print panel
 finder_expand_print_panel: True
+
+# @var finder_springing_enabled:description: Springing enabled
 finder_springing_enabled: True
+
+# @var finder_springing_delay:description: Springing delay
 finder_springing_delay: 0
+
+# @var finder_show_path_bar:description: Show path bar
 finder_show_path_bar: True
+
+# @var finder_show_status_bar:description: Show status bar
 finder_show_status_bar: True
+
+# @var finder_path_in_title:description:  Posix path title
 finder_path_in_title: True
+
+# @var finder_path_bar_at_home:description: Pathbar home root
 finder_path_bar_at_home: True
+
+# @var finder_restore_window_state:description: Restore window state
 finder_restore_window_state: True
+
+# @var finder_show_external_drives_on_desktop:description: Show external drives
 finder_show_external_drives_on_desktop: False
+
+# @var finder_show_hard_drives_on_desktop:description: Show internal drives
 finder_show_hard_drives_on_desktop: False
+
+# @var finder_show_mounted_servers_on_desktop:description: Show mounted servers
 finder_show_mounted_servers_on_desktop: False
+
+# @var finder_show_removable_media_on_desktop:description: Show removable media
 finder_show_removable_media_on_desktop: False
+
+# @var finder_show_tab_view:description: Show tab view
+finder_show_tab_view: True
+
+# @var finder_new_window_target:description: New window target
 finder_new_window_target: PfHm
+
+# @var finder_preferred_view_style:description: Preferred view style
 finder_preferred_view_style: clmv
+
+# @var finder_default_search_scope:description: Default search scope
 finder_default_search_scope: SCcf
+
+# @var finder_preferred_group_by:description: Preferred group by
 finder_preferred_group_by: Name
+
+# @var finder_folders_first:description: Sort folders first
 finder_folders_first: True
+
+# @var finder_enable_text_selection:description: Enable text selection
 finder_enable_text_selection: True
+
+# @var finder_show_hidden_files:description: Show all files
 finder_show_hidden_files: False
+
+# @var finder_show_all_extensions:description: Show all extensions
 finder_show_all_extensions: True
+
+# @var finder_enable_extension_change_warning:description: Extension change warning
 finder_enable_extension_change_warning: False
+
+# @var finder_warn_on_empty_trash:description: Warn on empty trash
 finder_warn_on_empty_trash: False
+
+# @var finder_emptry_trash_securely:description: Empty trash securely
 finder_emptry_trash_securely: False
 
+# @var finder_dont_write_network_stores:description: Don't write network stores
+finder_dont_write_network_stores: True
+
+# @var finder_dont_write_urb_stores:description: Don't write USB stores
+finder_dont_write_urb_stores: True
+
+# @var finder_column_options_show_icons:description: Show icons column option
+finder_column_options_show_icons: True
+
+# @var finder_column_options_show_thumbnails:description: Show thumbnails column option
+finder_column_options_show_thumbnails: True
+
+# @var finder_column_options_font_size:description: Font size column option
+finder_column_options_font_size: 12
+
+# @var finder_column_options_show_preview:description: Show preview column option
+finder_column_options_show_preview: True
+
+# @var finder_column_options_show_folder_arrow:description: Show folder arrow column option
+finder_column_options_show_folder_arrow: True
+
+# @var finder_column_options_arranged_by:description: Arranged by column option
+finder_column_options_arranged_by: dnam
+
+# @var finder_column_options_shared_arrange_by:description: Shared arrange by column option
+finder_column_options_shared_arrange_by: kipl
+
+# @var finder_column_options_column_width:description: Column width column option
+finder_column_options_column_width: 250
+
+# @var finder_column_options_preview_disclosure_state:description: Preview disclosure state column option
+finder_column_options_preview_disclosure_state: True
+
+# @var finder_show_item_info:description: Show item info
+finder_show_item_info: True
+
+# @var finder_arrange_by:description: Desktop arrange by
+finder_arrange_by: grid
+
+# @var finder_grid_spacing:description: Desktop grid spacing
+finder_grid_spacing: 100
+
+# @var finder_icon_size:description: Desktop icon size
+finder_icon_size: 64
+
+# @var finder_favorites:description: Favorites available in finder
+# @var finder_favorites:example: >
+# finder_favorites:
+#   - name: Home
+#     path: "file:///Users/{{ finder_user }}"
+#   - name: Applications
+#     path: "file:///Applications"
+#   - name: Desktop
+#     path: "file:///Users/{{ finder_user }}/Desktop"
+# @end
 finder_favorites:
   - name: Home
-    path: file://${HOME}
+    path: "file:///Users/{{ finder_user }}"
   - name: Applications
-    path: file:///Applications
+    path: "file:///Applications"
   - name: Desktop
-    path: file://${HOME}/Desktop
+    path: "file:///Users/{{ finder_user }}/Desktop"
   - name: Downloads
-    path: file://${HOME}/Downloads
+    path: "file:///Users/{{ finder_user }}/Downloads"
 
 ...

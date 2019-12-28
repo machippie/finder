@@ -3,4 +3,8 @@ rules:
   exclude_files:
     - README.md
 
+  exclude_filter:
+    - ANSIBLE0010
+    - LINT0008
+
 ...

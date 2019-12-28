@@ -1,14 +1,14 @@
 ---
-- name: finder user
+- name: Fact finder user
   set_fact:
-    finder_user: '{{ finder_user | default(homebrew_user) | default(ansible_user_id) }}'
+    finder_user: "{{ finder_user | default(homebrew_user) | default(ansible_user_id) }}"
   tags:
     - finder
 
-- become: '{{ (finder_user != ansible_user_id) | bool }}'
-  become_user: '{{ finder_user }}'
+- become: "{{ (finder_user != ansible_user_id) | bool }}"
+  become_user: "{{ finder_user }}"
   block:
-    - name: install mysides
+    - name: Install required package
       homebrew_cask:
         name: mysides
         greedy: True
@@ -18,409 +18,560 @@
       tags:
         - finder
 
-    - name: show library
-      command: 'chflags {{ "nohidden" if finder_show_library else "hidden" }} ~/Library'
-      changed_when: False
-      tags:
-        - finder
-
-    - name: icon size
+    - name: Default icon size
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: NSGlobalDomain
         key: NSTableViewDefaultSizeMode
         type: int
-        value: '{{ finder_default_icon_size }}'
+        value: "{{ finder_default_icon_size }}"
         state: present
       tags:
         - finder
 
-    - name: expand savepanel
+    - name: Expanded save panel
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: NSGlobalDomain
         key: NSNavPanelExpandedStateForSaveMode
         type: bool
-        value: '{{ finder_expand_save_panel }}'
+        value: "{{ finder_expand_save_panel }}"
         state: present
       tags:
         - finder
 
-    - name: expand printpanel
+    - name: Expanded print panel
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: NSGlobalDomain
         key: PMPrintingExpandedStateForPrint
         type: bool
-        value: '{{ finder_expand_print_panel }}'
+        value: "{{ finder_expand_print_panel }}"
         state: present
       tags:
         - finder
 
-    - name: springing enabled
+    - name: Springing enabled
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: NSGlobalDomain
         key: com.apple.springing.enabled
         type: bool
-        value: '{{ finder_springing_enabled }}'
+        value: "{{ finder_springing_enabled }}"
         state: present
       tags:
         - finder
 
-    - name: springing delay
+    - name: Springing delay
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: NSGlobalDomain
         key: com.apple.springing.delay
         type: float
-        value: '{{ finder_springing_delay }}'
+        value: "{{ finder_springing_delay }}"
         state: present
       tags:
         - finder
 
-    - name: path bar
+    - name: Show path bar
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: ShowPathbar
         type: bool
-        value: '{{ finder_show_path_bar }}'
+        value: "{{ finder_show_path_bar }}"
         state: present
       tags:
         - finder
 
-    - name: status bar
+    - name: Show status bar
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: ShowStatusBar
         type: bool
-        value: '{{ finder_show_status_bar }}'
+        value: "{{ finder_show_status_bar }}"
         state: present
       tags:
         - finder
 
-    - name: path title
+    - name: Posix path title
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: _FXShowPosixPathInTitle
         type: bool
-        value: '{{ finder_path_in_title }}'
+        value: "{{ finder_path_in_title }}"
         state: present
       tags:
         - finder
 
-    - name: path start
+    - name: Pathbar home root
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: PathBarRootAtHome
         type: bool
-        value: '{{ finder_path_bar_at_home }}'
+        value: "{{ finder_path_bar_at_home }}"
         state: present
       tags:
         - finder
 
-    - name: restore windows
+    - name: Restore window state
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: RestoreWindowState
         type: bool
-        value: '{{ finder_restore_window_state }}'
+        value: "{{ finder_restore_window_state }}"
         state: present
       tags:
         - finder
 
-    - name: external drives
+    - name: Show external drives
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: ShowExternalHardDrivesOnDesktop
         type: bool
-        value: '{{ finder_show_external_drives_on_desktop }}'
+        value: "{{ finder_show_external_drives_on_desktop }}"
         state: present
       tags:
         - finder
 
-    - name: hard drives
+    - name: Show internal drives
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: ShowHardDrivesOnDesktop
         type: bool
-        value: '{{ finder_show_hard_drives_on_desktop }}'
+        value: "{{ finder_show_hard_drives_on_desktop }}"
         state: present
       tags:
         - finder
 
-    - name: mounted servers
+    - name: Show mounted servers
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: ShowMountedServersOnDesktop
         type: bool
-        value: '{{ finder_show_mounted_servers_on_desktop }}'
+        value: "{{ finder_show_mounted_servers_on_desktop }}"
         state: present
       tags:
         - finder
 
-    - name: removable media
+    - name: Show removable media
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: ShowRemovableMediaOnDesktop
         type: bool
-        value: '{{ finder_show_removable_media_on_desktop }}'
+        value: "{{ finder_show_removable_media_on_desktop }}"
         state: present
       tags:
         - finder
 
-    - name: window target
+    - name: Show tab view
       notify:
-        - kill finder
+        - Kill finder
+      osx_defaults:
+        domain: com.apple.finder
+        key: ShowTabView
+        type: bool
+        value: "{{ finder_show_tab_view }}"
+        state: present
+      tags:
+        - finder
+
+    - name: New window target
+      notify:
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: NewWindowTarget
         type: string
-        value: '{{ finder_new_window_target }}'
+        value: "{{ finder_new_window_target }}"
         state: present
       tags:
         - finder
 
-    - name: preferred view
+    - name: Preferred view style
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: FXPreferredViewStyle
         type: string
-        value: '{{ finder_preferred_view_style }}'
+        value: "{{ finder_preferred_view_style }}"
         state: present
       tags:
         - finder
 
-    - name: search scope
+    - name: Default search scope
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: FXDefaultSearchScope
         type: string
-        value: '{{ finder_default_search_scope }}'
+        value: "{{ finder_default_search_scope }}"
         state: present
       tags:
         - finder
 
-    - name: preferred group
+    - name: Preferred group by
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: FXPreferredGroupBy
         type: string
-        value: '{{ finder_preferred_group_by }}'
+        value: "{{ finder_preferred_group_by }}"
         state: present
       tags:
         - finder
 
-    - name: folders first
+    - name: Sort folders first
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: _FXSortFoldersFirst
         type: bool
-        value: '{{ finder_folders_first }}'
+        value: "{{ finder_folders_first }}"
         state: present
       tags:
         - finder
 
-    - name: text selection
+    - name: Enable text selection
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: QLEnableTextSelection
         type: bool
-        value: '{{ finder_enable_text_selection }}'
+        value: "{{ finder_enable_text_selection }}"
         state: present
       tags:
         - finder
 
-    - name: hidden files
+    - name: Show all files
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: AppleShowAllFiles
         type: bool
-        value: '{{ finder_show_hidden_files }}'
+        value: "{{ finder_show_hidden_files }}"
         state: present
       tags:
         - finder
 
-    - name: show extensions
+    - name: Show all extensions
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: AppleShowAllExtensions
         type: bool
-        value: '{{ finder_show_all_extensions }}'
+        value: "{{ finder_show_all_extensions }}"
         state: present
       tags:
         - finder
 
-    - name: extension warning
+    - name: Extension change warning
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: FXEnableExtensionChangeWarning
         type: bool
-        value: '{{ finder_enable_extension_change_warning }}'
+        value: "{{ finder_enable_extension_change_warning }}"
         state: present
       tags:
         - finder
 
-    - name: warn trash
+    - name: Warn empty trash
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: WarnOnEmptyTrash
         type: bool
-        value: '{{ finder_warn_on_empty_trash }}'
+        value: "{{ finder_warn_on_empty_trash }}"
         state: present
       tags:
         - finder
 
-    - name: securely trash
+    - name: Empty trash securely
       notify:
-        - kill finder
+        - Kill finder
       osx_defaults:
         domain: com.apple.finder
         key: EmptyTrashSecurely
         type: bool
-        value: '{{ finder_emptry_trash_securely }}'
+        value: "{{ finder_emptry_trash_securely }}"
         state: present
       tags:
         - finder
 
-
-
-
-
-
-
-# Writing of .DS_Store files on network or USB volumes
-# defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
-# defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
-
-
-
-
-
-# # Expand the following File Info panes:
-# # “General”, “Open with”, and “Sharing & Permissions”
-# defaults write com.apple.finder FXInfoPanesExpanded -dict \
-#     General -bool true \
-#     OpenWith -bool true \
-#     Privileges -bool true
-
-
-
-
-
-# View Options
-# ColumnShowIcons    : Show preview column
-# ShowPreview        : Show icons
-# ShowIconThumbnails : Show icon preview
-# ArrangeBy          : Sort by
-#   dnam : Name
-#   kipl : Kind
-#   ludt : Date Last Opened
-#   pAdd : Date Added
-#   modd : Date Modified
-#   ascd : Date Created
-#   logs : Size
-#   labl : Tags
-# /usr/libexec/PlistBuddy \
-#     -c "Set :StandardViewOptions:ColumnViewOptions:ColumnShowIcons bool    false" \
-#     -c "Set :StandardViewOptions:ColumnViewOptions:FontSize        integer 11"    \
-#     -c "Set :StandardViewOptions:ColumnViewOptions:ShowPreview     bool    true"  \
-#     -c "Set :StandardViewOptions:ColumnViewOptions:ArrangeBy       string  dnam"  \
-#     ~/Library/Preferences/com.apple.finder.plist
-
-#     # Show item info near icons on the desktop and in other icon views
-#     - /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:showItemInfo true" ~/Library/Preferences/com.apple.finder.plist
-#     - /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:showItemInfo true" ~/Library/Preferences/com.apple.finder.plist
-#     - /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:showItemInfo true" ~/Library/Preferences/com.apple.finder.plist
-
-#     # Enable snap-to-grid for icons on the desktop and in other icon views
-#     - /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
-#     - /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
-#     - /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
-
-#     # Increase grid spacing for icons on the desktop and in other icon views
-#     - /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:gridSpacing 100" ~/Library/Preferences/com.apple.finder.plist
-#     - /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:gridSpacing 100" ~/Library/Preferences/com.apple.finder.plist
-#     - /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:gridSpacing 100" ~/Library/Preferences/com.apple.finder.plist
-
-#     # Increase the size of icons on the desktop and in other icon views
-#     - /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
-#     - /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
-#     - /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
-
-
-# # Set icon view settings on desktop and in icon views
-# for view in 'Desktop' 'FK_Standard' 'Standard'; do
-
-#     # Item info near icons
-#     /usr/libexec/PlistBuddy -c "Set :${view}ViewSettings:IconViewSettings:showItemInfo bool true" ~/Library/Preferences/com.apple.finder.plist
-
-#     # Item info to right of icons
-#     /usr/libexec/PlistBuddy -c "Set :${view}ViewSettings:IconViewSettings:labelOnBottom bool false" ~/Library/Preferences/com.apple.finder.plist
-
-#     # Snap-to-grid for icons
-#     /usr/libexec/PlistBuddy -c "Set :${view}ViewSettings:IconViewSettings:arrangeBy string grid" ~/Library/Preferences/com.apple.finder.plist
-
-#     # Grid spacing for icons
-#     /usr/libexec/PlistBuddy -c "Set :${view}ViewSettings:IconViewSettings:gridSpacing integer 100" ~/Library/Preferences/com.apple.finder.plist
-
-#     # Icon size
-#     /usr/libexec/PlistBuddy -c "Set :${view}ViewSettings:IconViewSettings:iconSize integer 32" ~/Library/Preferences/com.apple.finder.plist
-
-# done
-
-
-
-
-    - name: clear favorites
-      shell: mysides remove all
+    - name: Write network stores
+      notify:
+        - Kill finder
+      osx_defaults:
+        domain: com.apple.desktopservices
+        key: DSDontWriteNetworkStores
+        type: bool
+        value: "{{ finder_dont_write_network_stores }}"
+        state: present
       tags:
         - finder
 
-    - name: favorite apps
-      loop: '{{ finder_favorites }}'
-      shell: mysides add {{ item.name }} {{ item.path }}
+    - name: Write usb stores
+      notify:
+        - Kill finder
+      osx_defaults:
+        domain: com.apple.desktopservices
+        key: DSDontWriteUSBStores
+        type: bool
+        value: "{{ finder_dont_write_urb_stores }}"
+        state: present
+      tags:
+        - finder
+
+    - name: Check column options
+      register: finder_column_options_check
+      check_mode: False
+      failed_when: finder_column_options_check.rc != 0
+      changed_when: False
+      shell: |
+        /usr/libexec/PlistBuddy \
+        -c "Print :StandardViewOptions:ColumnViewOptions:ColumnShowIcons" \
+        -c "Print :StandardViewOptions:ColumnViewOptions:ShowIconThumbnails" \
+        -c "Print :StandardViewOptions:ColumnViewOptions:FontSize" \
+        -c "Print :StandardViewOptions:ColumnViewOptions:ShowPreview" \
+        -c "Print :StandardViewOptions:ColumnViewOptions:ColumnShowFolderArrow" \
+        -c "Print :StandardViewOptions:ColumnViewOptions:ArrangeBy" \
+        -c "Print :StandardViewOptions:ColumnViewOptions:SharedArrangeBy" \
+        -c "Print :StandardViewOptions:ColumnViewOptions:ColumnWidth" \
+        -c "Print :StandardViewOptions:ColumnViewOptions:PreviewDisclosureState" \
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist
+      tags:
+        - finder
+
+    - name: Changed column options
+      set_fact:
+        finder_column_options_changed:
+          - "{{ finder_column_options_show_icons | lower }}"
+          - "{{ finder_column_options_show_thumbnails | lower }}"
+          - "{{ finder_column_options_font_size | string }}"
+          - "{{ finder_column_options_show_preview | lower }}"
+          - "{{ finder_column_options_show_folder_arrow | lower }}"
+          - "{{ finder_column_options_arranged_by }}"
+          - "{{ finder_column_options_shared_arrange_by }}"
+          - "{{ finder_column_options_column_width | string }}"
+          - "{{ finder_column_options_preview_disclosure_state | lower }}"
+      tags:
+        - finder
+
+    - name: Change column options
+      notify:
+        - Kill finder
+      register: finder_show_item_info_requested
+      failed_when: finder_show_item_info_requested.rc != 0
+      changed_when: finder_column_options_check.stdout_lines != finder_column_options_changed
+      shell: |
+        /usr/libexec/PlistBuddy \
+        -c "Set :StandardViewOptions:ColumnViewOptions:ColumnShowIcons {{ finder_column_options_show_icons | lower }}" \
+        -c "Set :StandardViewOptions:ColumnViewOptions:ShowIconThumbnails {{ finder_column_options_show_thumbnails | lower }}" \
+        -c "Set :StandardViewOptions:ColumnViewOptions:FontSize {{ finder_column_options_font_size }}" \
+        -c "Set :StandardViewOptions:ColumnViewOptions:ShowPreview {{ finder_column_options_show_preview | lower }}" \
+        -c "Set :StandardViewOptions:ColumnViewOptions:ColumnShowFolderArrow {{ finder_column_options_show_folder_arrow | lower }}" \
+        -c "Set :StandardViewOptions:ColumnViewOptions:ArrangeBy {{ finder_column_options_arranged_by }}" \
+        -c "Set :StandardViewOptions:ColumnViewOptions:SharedArrangeBy {{ finder_column_options_shared_arrange_by }}" \
+        -c "Set :StandardViewOptions:ColumnViewOptions:ColumnWidth {{ finder_column_options_column_width }}" \
+        -c "Set :StandardViewOptions:ColumnViewOptions:PreviewDisclosureState {{ finder_column_options_preview_disclosure_state | lower }}" \
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist
+      tags:
+        - finder
+
+    - name: Check item info
+      register: finder_show_item_info_defined
+      check_mode: False
+      failed_when: finder_show_item_info_defined.rc != 0
+      changed_when: False
+      shell: |
+        /usr/libexec/PlistBuddy \
+        -c "Print :DesktopViewSettings:IconViewSettings:showItemInfo" \
+        -c "Print :FK_StandardViewSettings:IconViewSettings:showItemInfo" \
+        -c "Print :StandardViewSettings:IconViewSettings:showItemInfo" \
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist | uniq
+      tags:
+        - finder
+
+    - name: Change item info
+      notify:
+        - Kill finder
+      register: finder_show_item_info_requested
+      failed_when: finder_show_item_info_requested.rc != 0
+      changed_when: finder_show_item_info_defined.stdout != finder_show_item_info
+      shell: |
+        /usr/libexec/PlistBuddy \
+        -c "Set :DesktopViewSettings:IconViewSettings:showItemInfo {{ finder_show_item_info | lower }}" \
+        -c "Set :FK_StandardViewSettings:IconViewSettings:showItemInfo {{ finder_show_item_info | lower }}" \
+        -c "Set :StandardViewSettings:IconViewSettings:showItemInfo {{ finder_show_item_info | lower }}" \
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist
+      tags:
+        - finder
+
+    - name: Check arrange by
+      register: finder_arrange_by_defined
+      check_mode: False
+      failed_when: finder_arrange_by_defined.rc != 0
+      changed_when: False
+      shell: |
+        /usr/libexec/PlistBuddy \
+        -c "Print :DesktopViewSettings:IconViewSettings:arrangeBy" \
+        -c "Print :FK_StandardViewSettings:IconViewSettings:arrangeBy" \
+        -c "Print :StandardViewSettings:IconViewSettings:arrangeBy" \
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist | uniq
+      tags:
+        - finder
+
+    - name: Change arrange by
+      notify:
+        - Kill finder
+      register: finder_arrange_by_requested
+      failed_when: finder_arrange_by_requested.rc != 0
+      changed_when: finder_arrange_by_defined.stdout != finder_arrange_by
+      shell: |
+        /usr/libexec/PlistBuddy \
+        -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy {{ finder_arrange_by }}" \
+        -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy {{ finder_arrange_by }}" \
+        -c "Set :StandardViewSettings:IconViewSettings:arrangeBy {{ finder_arrange_by }}" \
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist
+      tags:
+        - finder
+
+    - name: Check grid spacing
+      register: finder_grid_spacing_defined
+      check_mode: False
+      failed_when: finder_grid_spacing_defined.rc != 0
+      changed_when: False
+      shell: |
+        /usr/libexec/PlistBuddy \
+        -c "Print :DesktopViewSettings:IconViewSettings:gridSpacing" \
+        -c "Print :FK_StandardViewSettings:IconViewSettings:gridSpacing" \
+        -c "Print :StandardViewSettings:IconViewSettings:gridSpacing" \
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist | cut -d. -f1 | uniq
+      tags:
+        - finder
+
+    - name: Change grid spacing
+      notify:
+        - Kill finder
+      register: finder_grid_spacing_requested
+      failed_when: finder_grid_spacing_requested.rc != 0
+      changed_when: finder_grid_spacing_defined.stdout | int != finder_grid_spacing
+      shell: |
+        /usr/libexec/PlistBuddy \
+        -c "Set :DesktopViewSettings:IconViewSettings:gridSpacing {{ finder_grid_spacing }}" \
+        -c "Set :FK_StandardViewSettings:IconViewSettings:gridSpacing {{ finder_grid_spacing }}" \
+        -c "Set :StandardViewSettings:IconViewSettings:gridSpacing {{ finder_grid_spacing }}" \
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist
+      tags:
+        - finder
+
+    - name: Check icon size
+      register: finder_icon_size_defined
+      check_mode: False
+      failed_when: finder_icon_size_defined.rc != 0
+      changed_when: False
+      shell: |
+        /usr/libexec/PlistBuddy \
+        -c "Print :DesktopViewSettings:IconViewSettings:iconSize" \
+        -c "Print :FK_StandardViewSettings:IconViewSettings:iconSize" \
+        -c "Print :StandardViewSettings:IconViewSettings:iconSize" \
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist | cut -d. -f1 | uniq
+      tags:
+        - finder
+
+    - name: Change icon size
+      notify:
+        - Kill finder
+      register: finder_icon_size_requested
+      failed_when: finder_icon_size_requested.rc != 0
+      changed_when: finder_icon_size_defined.stdout | int != finder_icon_size
+      shell: |
+        /usr/libexec/PlistBuddy \
+        -c "Set :DesktopViewSettings:IconViewSettings:iconSize {{ finder_icon_size }}" \
+        -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize {{ finder_icon_size }}" \
+        -c "Set :StandardViewSettings:IconViewSettings:iconSize {{ finder_icon_size }}" \
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist
+      tags:
+        - finder
+
+    - name: Check defined names
+      register: finder_defined_names
+      check_mode: False
+      failed_when: finder_defined_names.rc != 0
+      changed_when: False
+      shell: mysides list | cut -d' ' -f1
+      tags:
+        - finder
+
+    - name: Check defined paths
+      register: finder_defined_paths
+      check_mode: False
+      failed_when: finder_defined_paths.rc != 0
+      changed_when: False
+      shell: mysides list | cut -d' ' -f3
+      tags:
+        - finder
+
+    - name: Check requested favorites
+      set_fact:
+        finder_requested_names: "{{ finder_favorites | map(attribute='name') | list }}"
+        finder_requested_paths: "{{ finder_favorites | map(attribute='path') | map('regex_replace', '(.+)', '\\1/') | list }}"
+      tags:
+        - finder
+
+    - name: Diff between favorites
+      set_fact:
+        finder_diff_names: "{{ finder_defined_names.stdout_lines | difference(finder_requested_names) | length > 0 or finder_requested_names | difference(finder_defined_names.stdout_lines) | length > 0 }}"
+        finder_diff_paths: "{{ finder_defined_paths.stdout_lines | difference(finder_requested_paths) | length > 0 or finder_requested_paths | difference(finder_defined_paths.stdout_lines) | length > 0 }}"
+      tags:
+        - finder
+
+    - name: Clear previous favorites
+      notify:
+        - Kill finder
+      when: finder_diff_names or finder_diff_paths
+      command: mysides remove all
+      tags:
+        - finder
+
+    - name: Define requested favorites
+      notify:
+        - Kill finder
+      when: finder_diff_names or finder_diff_paths
+      loop: "{{ finder_favorites }}"
+      command: mysides add {{ item.name }} {{ item.path }}
       tags:
         - finder
 
