@@ -359,7 +359,7 @@
       check_mode: False
       failed_when: finder_column_options_check.rc != 0
       changed_when: False
-      shell: |
+      command: |
         /usr/libexec/PlistBuddy \
         -c "Print :StandardViewOptions:ColumnViewOptions:ColumnShowIcons" \
         -c "Print :StandardViewOptions:ColumnViewOptions:ShowIconThumbnails" \
@@ -395,7 +395,7 @@
       register: finder_show_item_info_requested
       failed_when: finder_show_item_info_requested.rc != 0
       changed_when: finder_column_options_check.stdout_lines != finder_column_options_changed
-      shell: |
+      command: |
         /usr/libexec/PlistBuddy \
         -c "Set :StandardViewOptions:ColumnViewOptions:ColumnShowIcons {{ finder_column_options_show_icons | lower }}" \
         -c "Set :StandardViewOptions:ColumnViewOptions:ShowIconThumbnails {{ finder_column_options_show_thumbnails | lower }}" \
@@ -430,7 +430,7 @@
       register: finder_show_item_info_requested
       failed_when: finder_show_item_info_requested.rc != 0
       changed_when: finder_show_item_info_defined.stdout != finder_show_item_info
-      shell: |
+      command: |
         /usr/libexec/PlistBuddy \
         -c "Set :DesktopViewSettings:IconViewSettings:showItemInfo {{ finder_show_item_info | lower }}" \
         -c "Set :FK_StandardViewSettings:IconViewSettings:showItemInfo {{ finder_show_item_info | lower }}" \
@@ -459,7 +459,7 @@
       register: finder_arrange_by_requested
       failed_when: finder_arrange_by_requested.rc != 0
       changed_when: finder_arrange_by_defined.stdout != finder_arrange_by
-      shell: |
+      command: |
         /usr/libexec/PlistBuddy \
         -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy {{ finder_arrange_by }}" \
         -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy {{ finder_arrange_by }}" \
@@ -488,7 +488,7 @@
       register: finder_grid_spacing_requested
       failed_when: finder_grid_spacing_requested.rc != 0
       changed_when: finder_grid_spacing_defined.stdout | int != finder_grid_spacing
-      shell: |
+      command: |
         /usr/libexec/PlistBuddy \
         -c "Set :DesktopViewSettings:IconViewSettings:gridSpacing {{ finder_grid_spacing }}" \
         -c "Set :FK_StandardViewSettings:IconViewSettings:gridSpacing {{ finder_grid_spacing }}" \
