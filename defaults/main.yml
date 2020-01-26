@@ -122,10 +122,10 @@ finder_show_item_info: True
 finder_arrange_by: grid
 
 # @var finder_grid_spacing:description: Desktop grid spacing
-finder_grid_spacing: 100
+finder_grid_spacing: 100.000000
 
 # @var finder_icon_size:description: Desktop icon size
-finder_icon_size: 64
+finder_icon_size: 64.000000
 
 # @var finder_favorites:description: Favorites available in finder
 # @var finder_favorites:example: >

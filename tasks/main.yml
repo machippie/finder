@@ -357,7 +357,7 @@
     - name: Check column options
       register: finder_column_options_check
       check_mode: False
-      failed_when: finder_column_options_check.rc != 0
+      failed_when: False
       changed_when: False
       command: |
         /usr/libexec/PlistBuddy \
@@ -394,8 +394,8 @@
         - Kill finder
       register: finder_show_item_info_created
       failed_when: finder_show_item_info_created.rc != 0
-      changed_when: finder_column_options_check.stdout_lines.length == 0
-      when: finder_column_options_check.stdout_lines.length == 0
+      changed_when: finder_column_options_check.stdout_lines | length == 0
+      when: finder_column_options_check.stdout_lines | length == 0
       command: |
         /usr/libexec/PlistBuddy \
         -c "Add :StandardViewOptions dict" \
@@ -419,7 +419,7 @@
       register: finder_show_item_info_requested
       failed_when: finder_show_item_info_requested.rc != 0
       changed_when: finder_column_options_check.stdout_lines != finder_column_options_changed
-      when: finder_column_options_check.stdout_lines.length != 0
+      when: finder_column_options_check.stdout_lines | length != 0
       command: |
         /usr/libexec/PlistBuddy \
         -c "Set :StandardViewOptions:ColumnViewOptions:ColumnShowIcons {{ finder_column_options_show_icons | lower }}" \
@@ -435,17 +435,48 @@
       tags:
         - finder
 
+    - name: Check standardview settings
+      register: finder_standard_view_settings_defined
+      check_mode: False
+      failed_when: False
+      changed_when: False
+      shell: |
+        /usr/libexec/PlistBuddy \
+        -c "Print :FK_StandardViewSettings" \
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist
+      tags:
+        - finder
+
+    - name: Create standardview settings
+      notify:
+        - Kill finder
+      register: finder_standard_view_settings_created
+      failed_when: finder_standard_view_settings_created.rc != 0
+      changed_when: finder_standard_view_settings_defined.rc != 0
+      when: finder_standard_view_settings_defined.rc != 0
+      command: |
+        /usr/libexec/PlistBuddy \
+        -c "Add :FK_StandardViewSettings dict" \
+        -c "Add :FK_StandardViewSettings:IconViewSettings dict" \
+        -c "Add :FK_StandardViewSettings:IconViewSettings:showItemInfo bool {{ finder_show_item_info | lower }}" \
+        -c "Add :FK_StandardViewSettings:IconViewSettings:arrangeBy string {{ finder_arrange_by }}" \
+        -c "Add :FK_StandardViewSettings:IconViewSettings:gridSpacing real {{ finder_grid_spacing }}" \
+        -c "Add :FK_StandardViewSettings:IconViewSettings:iconSize real {{ finder_icon_size }}" \
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist
+      tags:
+        - finder
+
     - name: Check item info
       register: finder_show_item_info_defined
       check_mode: False
-      failed_when: finder_show_item_info_defined.rc != 0
+      failed_when: False
       changed_when: False
       shell: |
         /usr/libexec/PlistBuddy \
         -c "Print :DesktopViewSettings:IconViewSettings:showItemInfo" \
         -c "Print :FK_StandardViewSettings:IconViewSettings:showItemInfo" \
         -c "Print :StandardViewSettings:IconViewSettings:showItemInfo" \
-        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist | uniq
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist
       tags:
         - finder
 
@@ -454,7 +485,7 @@
         - Kill finder
       register: finder_show_item_info_requested
       failed_when: finder_show_item_info_requested.rc != 0
-      changed_when: finder_show_item_info_defined.stdout != finder_show_item_info
+      changed_when: finder_show_item_info_defined.stdout_lines | unique | length > 1 or finder_show_item_info_defined.stdout_lines | unique | first | bool != finder_show_item_info
       command: |
         /usr/libexec/PlistBuddy \
         -c "Set :DesktopViewSettings:IconViewSettings:showItemInfo {{ finder_show_item_info | lower }}" \
@@ -467,14 +498,14 @@
     - name: Check arrange by
       register: finder_arrange_by_defined
       check_mode: False
-      failed_when: finder_arrange_by_defined.rc != 0
+      failed_when: False
       changed_when: False
       shell: |
         /usr/libexec/PlistBuddy \
         -c "Print :DesktopViewSettings:IconViewSettings:arrangeBy" \
         -c "Print :FK_StandardViewSettings:IconViewSettings:arrangeBy" \
         -c "Print :StandardViewSettings:IconViewSettings:arrangeBy" \
-        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist | uniq
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist
       tags:
         - finder
 
@@ -483,7 +514,8 @@
         - Kill finder
       register: finder_arrange_by_requested
       failed_when: finder_arrange_by_requested.rc != 0
-      changed_when: finder_arrange_by_defined.stdout != finder_arrange_by
+      changed_when: finder_arrange_by_defined.stdout_lines | unique | length > 1 or finder_arrange_by_defined.stdout_lines | unique | first != finder_arrange_by
+      when: finder_arrange_by_defined.rc == 0
       command: |
         /usr/libexec/PlistBuddy \
         -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy {{ finder_arrange_by }}" \
@@ -496,14 +528,14 @@
     - name: Check grid spacing
       register: finder_grid_spacing_defined
       check_mode: False
-      failed_when: finder_grid_spacing_defined.rc != 0
+      failed_when: False
       changed_when: False
       shell: |
         /usr/libexec/PlistBuddy \
         -c "Print :DesktopViewSettings:IconViewSettings:gridSpacing" \
         -c "Print :FK_StandardViewSettings:IconViewSettings:gridSpacing" \
         -c "Print :StandardViewSettings:IconViewSettings:gridSpacing" \
-        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist | cut -d. -f1 | uniq
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist
       tags:
         - finder
 
@@ -512,7 +544,8 @@
         - Kill finder
       register: finder_grid_spacing_requested
       failed_when: finder_grid_spacing_requested.rc != 0
-      changed_when: finder_grid_spacing_defined.stdout | int != finder_grid_spacing
+      changed_when: finder_grid_spacing_defined.stdout_lines | unique | length > 1 or finder_grid_spacing_defined.stdout_lines | unique | first | int != finder_grid_spacing | int
+      when: finder_grid_spacing_defined.rc == 0
       command: |
         /usr/libexec/PlistBuddy \
         -c "Set :DesktopViewSettings:IconViewSettings:gridSpacing {{ finder_grid_spacing }}" \
@@ -525,14 +558,14 @@
     - name: Check icon size
       register: finder_icon_size_defined
       check_mode: False
-      failed_when: finder_icon_size_defined.rc != 0
+      failed_when: False
       changed_when: False
       shell: |
         /usr/libexec/PlistBuddy \
         -c "Print :DesktopViewSettings:IconViewSettings:iconSize" \
         -c "Print :FK_StandardViewSettings:IconViewSettings:iconSize" \
         -c "Print :StandardViewSettings:IconViewSettings:iconSize" \
-        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist | cut -d. -f1 | uniq
+        /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist
       tags:
         - finder
 
@@ -541,7 +574,8 @@
         - Kill finder
       register: finder_icon_size_requested
       failed_when: finder_icon_size_requested.rc != 0
-      changed_when: finder_icon_size_defined.stdout | int != finder_icon_size
+      changed_when: finder_icon_size_defined.stdout_lines | unique | length > 1 or finder_icon_size_defined.stdout_lines | unique | first | int != finder_icon_size | int
+      when: finder_icon_size_defined.rc == 0
       shell: |
         /usr/libexec/PlistBuddy \
         -c "Set :DesktopViewSettings:IconViewSettings:iconSize {{ finder_icon_size }}" \
