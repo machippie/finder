@@ -238,7 +238,7 @@ Desktop grid spacing
 #### Default value
 
 ```yaml
-finder_grid_spacing: 100
+finder_grid_spacing: 100.0
 ```
 
 ### finder_icon_size
@@ -248,7 +248,7 @@ Desktop icon size
 #### Default value
 
 ```yaml
-finder_icon_size: 64
+finder_icon_size: 64.0
 ```
 
 ### finder_new_window_target
