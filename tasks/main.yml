@@ -400,15 +400,15 @@
         /usr/libexec/PlistBuddy \
         -c "Add :StandardViewOptions dict" \
         -c "Add :StandardViewOptions:ColumnViewOptions dict" \
-        -c "Add :StandardViewOptions:ColumnViewOptions:ColumnShowIcons {{ finder_column_options_show_icons | lower }}" \
-        -c "Add :StandardViewOptions:ColumnViewOptions:ShowIconThumbnails {{ finder_column_options_show_thumbnails | lower }}" \
-        -c "Add :StandardViewOptions:ColumnViewOptions:FontSize {{ finder_column_options_font_size }}" \
-        -c "Add :StandardViewOptions:ColumnViewOptions:ShowPreview {{ finder_column_options_show_preview | lower }}" \
-        -c "Add :StandardViewOptions:ColumnViewOptions:ColumnShowFolderArrow {{ finder_column_options_show_folder_arrow | lower }}" \
-        -c "Add :StandardViewOptions:ColumnViewOptions:ArrangeBy {{ finder_column_options_arranged_by }}" \
-        -c "Add :StandardViewOptions:ColumnViewOptions:SharedArrangeBy {{ finder_column_options_shared_arrange_by }}" \
-        -c "Add :StandardViewOptions:ColumnViewOptions:ColumnWidth {{ finder_column_options_column_width }}" \
-        -c "Add :StandardViewOptions:ColumnViewOptions:PreviewDisclosureState {{ finder_column_options_preview_disclosure_state | lower }}" \
+        -c "Add :StandardViewOptions:ColumnViewOptions:ColumnShowIcons bool {{ finder_column_options_show_icons | lower }}" \
+        -c "Add :StandardViewOptions:ColumnViewOptions:ShowIconThumbnails bool {{ finder_column_options_show_thumbnails | lower }}" \
+        -c "Add :StandardViewOptions:ColumnViewOptions:FontSize integer {{ finder_column_options_font_size }}" \
+        -c "Add :StandardViewOptions:ColumnViewOptions:ShowPreview bool {{ finder_column_options_show_preview | lower }}" \
+        -c "Add :StandardViewOptions:ColumnViewOptions:ColumnShowFolderArrow bool {{ finder_column_options_show_folder_arrow | lower }}" \
+        -c "Add :StandardViewOptions:ColumnViewOptions:ArrangeBy string {{ finder_column_options_arranged_by }}" \
+        -c "Add :StandardViewOptions:ColumnViewOptions:SharedArrangeBy string {{ finder_column_options_shared_arrange_by }}" \
+        -c "Add :StandardViewOptions:ColumnViewOptions:ColumnWidth integer {{ finder_column_options_column_width }}" \
+        -c "Add :StandardViewOptions:ColumnViewOptions:PreviewDisclosureState bool {{ finder_column_options_preview_disclosure_state | lower }}" \
         /Users/{{ finder_user }}/Library/Preferences/com.apple.finder.plist
       tags:
         - finder
