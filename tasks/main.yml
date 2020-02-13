@@ -590,7 +590,7 @@
       check_mode: False
       failed_when: finder_defined_names.rc != 0
       changed_when: False
-      shell: mysides list | cut -d' ' -f1
+      shell: /usr/local/bin/mysides list | cut -d' ' -f1
       tags:
         - finder
 
@@ -599,7 +599,7 @@
       check_mode: False
       failed_when: finder_defined_paths.rc != 0
       changed_when: False
-      shell: mysides list | cut -d' ' -f3
+      shell: /usr/local/bin/mysides list | cut -d' ' -f3
       tags:
         - finder
 
@@ -621,7 +621,7 @@
       notify:
         - Kill finder
       when: finder_diff_names or finder_diff_paths
-      command: mysides remove all
+      command: /usr/local/bin/mysides remove all
       tags:
         - finder
 
@@ -630,7 +630,7 @@
         - Kill finder
       when: finder_diff_names or finder_diff_paths
       loop: "{{ finder_favorites }}"
-      command: mysides add {{ item.name }} {{ item.path }}
+      command: /usr/local/bin/mysides add {{ item.name }} {{ item.path }}
       tags:
         - finder
 
